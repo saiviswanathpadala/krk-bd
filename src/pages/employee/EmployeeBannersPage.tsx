@@ -139,7 +139,7 @@ export const EmployeeBannersPage: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   
   const filterFromUrl = searchParams.get('filter') as 'all' | 'active' | 'inactive' | 'pending' | 'needs_revision' | 'drafts' | null;
-  const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive' | 'pending' | 'needs_revision' | 'drafts'>(filterFromUrl || 'drafts');
+  const [activeFilter, setActiveFilter] = useState<'all' | 'active' | 'inactive' | 'pending' | 'needs_revision' | 'drafts'>(filterFromUrl || 'all');
   const [searchQuery, setSearchQuery] = useState<string>('');
   const debouncedSearch = useDebounce(searchQuery, 500);
 
