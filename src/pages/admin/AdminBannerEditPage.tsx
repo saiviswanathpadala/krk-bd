@@ -97,7 +97,8 @@ export const AdminBannerEditPage: React.FC = () => {
 
   const updateMutation = useMutation({
     mutationFn: (data: BannerFormData) => {
-      return adminAPI.updateBanner(token!, bannerId!, data);
+      if (!bannerId) throw new Error('Banner ID is required for update');
+      return adminAPI.updateBanner(token!, bannerId, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-banners'] });
@@ -116,7 +117,7 @@ export const AdminBannerEditPage: React.FC = () => {
       return toast.error('Title, subtitle and image are required');
     }
 
-    if (isNew) {
+    if (isNew || !bannerId) {
       createMutation.mutate(formData);
     } else {
       updateMutation.mutate(formData);
