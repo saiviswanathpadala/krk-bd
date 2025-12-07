@@ -1,6 +1,6 @@
 import React, { useState, useMemo, useRef, useCallback, useEffect } from 'react';
 import { useInfiniteQuery, useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link, useLocation } from 'react-router-dom';
 import {
   AlertCircle,
   RefreshCw,
@@ -150,20 +150,31 @@ const BannerRow: React.FC<{
 export const AdminBannersListPage: React.FC = () => {
   const { token } = useAuthStore();
   const navigate = useNavigate();
+  const location = useLocation();
   const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   
   const searchParams = new URLSearchParams(location.search);
-  const initialFilter = (searchParams.get('filter') as any) || 'all';
+  const urlFilter = searchParams.get('filter') as 'all' | 'approved' | 'pending' | 'needs_revision' | null;
+  const initialFilter = urlFilter || 'all';
   const [activeFilter, setActiveFilter] = useState<'all' | 'approved' | 'pending' | 'needs_revision'>(initialFilter);
+
+  // Sync activeFilter with URL on mount and URL changes
+  useEffect(() => {
+    if (urlFilter && urlFilter !== activeFilter) {
+      setActiveFilter(urlFilter);
+    }
+  }, [urlFilter]);
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearch = useDebounce(searchQuery, 500);
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    params.set('filter', activeFilter);
-    navigate(`?${params.toString()}`, { replace: true });
-  }, [activeFilter, navigate]);
+    if (params.get('filter') !== activeFilter) {
+      params.set('filter', activeFilter);
+      navigate(`?${params.toString()}`, { replace: true });
+    }
+  }, [activeFilter, navigate, location.search]);
 
   // Use different queries based on filter
   const isPendingChangeFilter = activeFilter === 'pending' || activeFilter === 'needs_revision';
