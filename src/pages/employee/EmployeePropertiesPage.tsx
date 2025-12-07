@@ -1,6 +1,6 @@
 import React, { useState, useRef, useCallback, useMemo, useEffect } from 'react';
 import { useInfiniteQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { useNavigate, useLocation, useSearchParams } from 'react-router-dom';
 import {
   Search,
   AlertCircle,
@@ -148,8 +148,10 @@ export const EmployeePropertiesPage: React.FC = () => {
   const queryClient = useQueryClient();
   const loadMoreRef = useRef<HTMLDivElement>(null);
   
+  const [searchParams, setSearchParams] = useSearchParams();
+  const filterFromUrl = searchParams.get('filter') as 'all' | 'approved' | 'pending' | 'needs_revision' | 'drafts' | null;
   const [activeFilter, setActiveFilter] = useState<'all' | 'approved' | 'pending' | 'needs_revision' | 'drafts'>(
-    (location.state as any)?.activeFilter || 'all'
+    filterFromUrl || (location.state as any)?.activeFilter || 'all'
   );
   const [searchQuery, setSearchQuery] = useState('');
   const debouncedSearch = useDebounce(searchQuery, 500);
@@ -159,11 +161,17 @@ export const EmployeePropertiesPage: React.FC = () => {
       queryClient.refetchQueries({ queryKey: ['employee-properties'], exact: false });
       queryClient.refetchQueries({ queryKey: EMPLOYEE_PROPERTY_PENDING_CHANGES_LIST_KEY, exact: false });
     }
-    // Set active filter from navigation state if provided
-    if ((location.state as any)?.activeFilter) {
+  }, [location.pathname, queryClient]);
+
+  useEffect(() => {
+    const filterFromUrl = searchParams.get('filter') as 'all' | 'approved' | 'pending' | 'needs_revision' | 'drafts' | null;
+    if (filterFromUrl) {
+      setActiveFilter(filterFromUrl);
+    } else if ((location.state as any)?.activeFilter && location.key !== 'default') {
       setActiveFilter((location.state as any).activeFilter);
+      setSearchParams({ filter: (location.state as any).activeFilter });
     }
-  }, [location.pathname, location.state, queryClient]);
+  }, [location.state, location.key, searchParams, setSearchParams]);
 
   const {
     data: propertiesData,
@@ -667,7 +675,10 @@ export const EmployeePropertiesPage: React.FC = () => {
             {(['all', 'approved', 'pending', 'needs_revision', 'drafts'] as const).map((filter) => (
               <button
                 key={filter}
-                onClick={() => setActiveFilter(filter)}
+                onClick={() => {
+                  setActiveFilter(filter);
+                  setSearchParams({ filter });
+                }}
                 className={`px-3 py-1.5 rounded-full text-xs sm:text-sm font-semibold whitespace-nowrap transition-all flex-shrink-0 ${
                   activeFilter === filter
                     ? 'bg-primary text-primary-foreground shadow-md'
