@@ -143,8 +143,16 @@ export const AdminPropertiesListPage: React.FC = () => {
   const loadMoreRef = useRef<HTMLDivElement>(null);
   
   const searchParams = new URLSearchParams(location.search);
-  const initialFilter = (searchParams.get('filter') as any) || (location.state as any)?.activeFilter || 'all';
+  const urlFilter = searchParams.get('filter') as 'all' | 'approved' | 'pending' | 'needs_revision' | 'draft' | null;
+  const initialFilter = urlFilter || (location.state as any)?.activeFilter || 'all';
   const [activeFilter, setActiveFilter] = useState<'all' | 'approved' | 'pending' | 'needs_revision' | 'draft'>(initialFilter);
+
+  // Sync activeFilter with URL on mount and URL changes
+  useEffect(() => {
+    if (urlFilter && urlFilter !== activeFilter) {
+      setActiveFilter(urlFilter);
+    }
+  }, [urlFilter]);
   const [searchQuery, setSearchQuery] = useState('');
   const [debouncedSearch, setDebouncedSearch] = useState('');
 
@@ -344,9 +352,11 @@ export const AdminPropertiesListPage: React.FC = () => {
 
   useEffect(() => {
     const params = new URLSearchParams(location.search);
-    params.set('filter', activeFilter);
-    navigate(`?${params.toString()}`, { replace: true });
-  }, [activeFilter]);
+    if (params.get('filter') !== activeFilter) {
+      params.set('filter', activeFilter);
+      navigate(`?${params.toString()}`, { replace: true });
+    }
+  }, [activeFilter, navigate, location.search]);
 
   const handlePropertyClick = (property: Property) => {
     // If it's a draft, navigate to edit page with draft data
