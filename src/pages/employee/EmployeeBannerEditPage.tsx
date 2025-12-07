@@ -40,7 +40,7 @@ export const EmployeeBannerEditPage: React.FC = () => {
   const { data: bannerResponse, isLoading } = useQuery({
     queryKey: ['employee-banner', bannerId || changeId],
     queryFn: async () => {
-      if (bannerId) {
+      if (bannerId && !isDraft) {
         return await employeeAPI.getBannerById(token!, bannerId);
       }
       if (changeId && !draftData) {
@@ -50,7 +50,7 @@ export const EmployeeBannerEditPage: React.FC = () => {
       }
       return { data: null };
     },
-    enabled: !!token && (!!bannerId || (!!changeId && !draftData)),
+    enabled: !!token && ((!!bannerId && !isDraft) || (!!changeId && !draftData)),
   });
 
   useEffect(() => {
