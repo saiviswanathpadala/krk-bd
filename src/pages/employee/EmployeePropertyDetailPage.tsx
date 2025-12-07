@@ -89,6 +89,11 @@ export const EmployeePropertyDetailPage: React.FC = () => {
   const isEdit = window.location.pathname.includes('/edit');
   const propertyId = isNew ? null : id;
 
+  const locationState = location.state as any;
+  const changeId = locationState?.changeId;
+  const isPendingNew = locationState?.isPendingNew;
+  const isNeedsRevision = locationState?.isNeedsRevision;
+
   const { data: propertyResponse, isLoading, error, refetch } = useQuery({
     queryKey: ['employee-property', propertyId],
     queryFn: async () => {
@@ -96,7 +101,7 @@ export const EmployeePropertyDetailPage: React.FC = () => {
       const response = await employeeAPI.getPropertyById(token!, propertyId);
       return response.data;
     },
-    enabled: !!token && !!propertyId && !isNew,
+    enabled: !!token && !!propertyId && !isNew && !isPendingNew,
     staleTime: 5 * 60 * 1000, // 5 minutes
     gcTime: 10 * 60 * 1000, // 10 minutes
     refetchOnMount: 'always',
@@ -104,11 +109,6 @@ export const EmployeePropertyDetailPage: React.FC = () => {
     retry: 3,
     retryDelay: (attemptIndex) => Math.min(1000 * 2 ** attemptIndex, 30000),
   });
-
-  const locationState = location.state as any;
-  const changeId = locationState?.changeId;
-  const isPendingNew = locationState?.isPendingNew;
-  const isNeedsRevision = locationState?.isNeedsRevision;
 
   const { data: pendingChangesResponse, isLoading: isLoadingChange } = useQuery({
     queryKey: EMPLOYEE_PROPERTY_PENDING_CHANGES_DETAIL_KEY,
