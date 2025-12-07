@@ -212,7 +212,7 @@ export const adminAPI = {
   updateBanner: (token: string, id: string | number, data: any) => api.put(`/admin/banners/${id}`, data, {
     headers: { Authorization: `Bearer ${token}` }
   }),
-  deleteBanner: (token: string, id: number) => api.delete(`/admin/banners/${id}`, {
+  deleteBanner: (token: string, id: string) => api.delete(`/admin/banners/${id}`, {
     headers: { Authorization: `Bearer ${token}` }
   }),
   // Loan Requests
