@@ -199,7 +199,9 @@ export const AdminPendingChangeDetailPage: React.FC = () => {
     },
   });
 
-  const backUrl = returnFilter ? `/admin/banners/list?filter=${returnFilter}` : '/admin/properties/list';
+  const backUrl = change?.type === 'banner' 
+    ? (returnFilter ? `/admin/banners/list?filter=${returnFilter}` : '/admin/banners/list')
+    : (returnFilter ? `/admin/properties/list?filter=${returnFilter}` : '/admin/properties/list');
 
   const handleApprove = () => {
     approveMutation.mutate();
