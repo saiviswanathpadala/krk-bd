@@ -241,14 +241,14 @@ export const AdminBannerDetailPage: React.FC = () => {
 
   const deleteMutation = useMutation({
     mutationFn: () => {
-      const numId = parseInt(bannerId!);
-      return adminAPI.deleteBanner(token!, isNaN(numId) ? 0 : numId);
+      if (!bannerId) throw new Error('Banner ID is required');
+      return adminAPI.deleteBanner(token!, bannerId);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['admin-banners'] });
       queryClient.invalidateQueries({ queryKey: ['admin-dashboard-stats'] });
       toast.success('Banner deleted successfully');
-      navigate('/admin/banners');
+      navigate(backUrl);
     },
     onError: (error: any) => {
       toast.error(error.response?.data?.message || 'Failed to delete banner');
@@ -917,4 +917,3 @@ export const AdminBannerDetailPage: React.FC = () => {
     </div>
   );
 };
-
