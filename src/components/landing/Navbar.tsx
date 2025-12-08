@@ -48,7 +48,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
         <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md }}>
           <img
             src={logoImage}
-            alt="Maruthi Logo"
+            alt="Kreddy King Logo"
             style={{
               width: '40px',
               height: '40px',
@@ -65,7 +65,7 @@ export const Navbar: React.FC<NavbarProps> = ({ onLoginClick }) => {
               letterSpacing: '-0.01em',
             }}
           >
-            Maruthi Real Estate
+           Kreddy King
           </h1>
         </div>
         <Button onClick={onLoginClick} size="default" style={{ backgroundColor: colors.primary.gold, color: colors.primary.navy, fontWeight: 600 }}>
