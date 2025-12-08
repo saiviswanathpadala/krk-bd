@@ -190,12 +190,12 @@ export const AdminLoanRequestDetailPage: React.FC = () => {
   };
 
   const handleCall = () => {
-    window.location.href = `tel:+91${loanRequest?.userPhone}`;
+    window.location.href = `tel:${loanRequest?.userPhone}`;
   };
 
   const handleWhatsApp = () => {
     const phone = loanRequest?.userPhone.replace(/\D/g, '');
-    window.open(`https://wa.me/91${phone}`, '_blank');
+    window.open(`https://wa.me/${phone}`, '_blank');
   };
 
   const handleEmail = () => {
