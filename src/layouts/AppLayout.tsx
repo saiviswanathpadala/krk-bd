@@ -78,9 +78,9 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
           <SidebarMenu className="group-data-[collapsible=icon]:items-center">
             <SidebarMenuItem>
               <SidebarMenuButton size="lg">
-                <img src={logoImage} alt="Maruthi" className="size-8" />
+                <img src={logoImage} alt="Kreddy King" className="size-8" />
                 <div className="grid flex-1 text-left text-sm leading-tight transition-all duration-300 group-data-[collapsible=icon]:w-0 group-data-[collapsible=icon]:opacity-0">
-                  <span className="truncate font-semibold">Maruthi</span>
+                  <span className="truncate font-semibold">Kreddy King</span>
                   <span className="truncate text-xs capitalize">{user?.role || 'User'}</span>
                 </div>
               </SidebarMenuButton>
@@ -121,7 +121,7 @@ export const AppLayout = ({ children }: { children: React.ReactNode }) => {
         <header className="flex h-14 md:h-16 shrink-0 items-center gap-2 border-b px-3 md:px-4">
           <SidebarTrigger className="-ml-1" />
           <div className="h-4 w-px bg-border hidden sm:block" />
-          <h1 className="text-base md:text-lg font-semibold truncate">Maruthi Real Estate</h1>
+          <h1 className="text-base md:text-lg font-semibold truncate">Kreddy King</h1>
         </header>
         <main className="flex flex-1 flex-col gap-4 p-2 sm:p-4">{children}</main>
       </SidebarInset>
