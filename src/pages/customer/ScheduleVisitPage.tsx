@@ -65,7 +65,7 @@ export const ScheduleVisitPage: React.FC = () => {
     if (user?.name) params.append('name', user.name);
     if (user?.email) params.append('email', user.email);
     if (user?.phone) {
-      const phoneWithCountryCode = user.phone.startsWith('+') ? user.phone : `+91${user.phone}`;
+      const phoneWithCountryCode = user.phone.startsWith('+') ? user.phone : `${user.phone}`;
       params.append('a1', phoneWithCountryCode);
     }
 
