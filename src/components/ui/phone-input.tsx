@@ -63,7 +63,7 @@ const InputComponent = React.forwardRef<
   React.ComponentProps<"input">
 >(({ className, ...props }, ref) => (
   <Input
-    className={cn("rounded-e-lg rounded-s-none", className)}
+    className={cn("rounded-e-lg rounded-s-none focus:ring-0 focus-visible:ring-0 focus:ring-offset-0", className)}
     {...props}
     ref={ref}
   />
@@ -85,79 +85,63 @@ const CountrySelect = ({
   options: countryList,
   onChange,
 }: CountrySelectProps) => {
-  const scrollAreaRef = React.useRef<HTMLDivElement>(null);
   const [searchValue, setSearchValue] = React.useState("");
   const [isOpen, setIsOpen] = React.useState(false);
+  const buttonRef = React.useRef<HTMLButtonElement>(null);
 
   return (
-    <Popover
-      open={isOpen}
-      modal
-      onOpenChange={(open) => {
-        setIsOpen(open);
-        open && setSearchValue("");
-      }}
-    >
-      <PopoverTrigger asChild>
-        <Button
-          type="button"
-          variant="outline"
-          className="flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3 focus:z-10"
-          disabled={disabled}
-        >
-          <FlagComponent
-            country={selectedCountry}
-            countryName={selectedCountry}
-          />
-          <ChevronsUpDown
-            className={cn(
-              "-mr-2 size-4 opacity-50",
-              disabled ? "hidden" : "opacity-100"
-            )}
-          />
-        </Button>
-      </PopoverTrigger>
-      <PopoverContent className="w-[300px] p-0">
-        <Command>
-          <CommandInput
-            value={searchValue}
-            onValueChange={(value) => {
-              setSearchValue(value);
-              setTimeout(() => {
-                if (scrollAreaRef.current) {
-                  const viewportElement = scrollAreaRef.current.querySelector(
-                    "[data-radix-scroll-area-viewport]"
-                  );
-                  if (viewportElement) {
-                    viewportElement.scrollTop = 0;
-                  }
-                }
-              }, 0);
-            }}
-            placeholder="Search country..."
-          />
-          <CommandList>
-            <ScrollArea ref={scrollAreaRef} className="h-72">
-              <CommandEmpty>No country found.</CommandEmpty>
-              <CommandGroup>
-                {countryList.map(({ value, label }) =>
-                  value ? (
-                    <CountrySelectOption
-                      key={value}
-                      country={value}
-                      countryName={label}
-                      selectedCountry={selectedCountry}
-                      onChange={onChange}
-                      onSelectComplete={() => setIsOpen(false)}
-                    />
-                  ) : null
-                )}
-              </CommandGroup>
-            </ScrollArea>
-          </CommandList>
-        </Command>
-      </PopoverContent>
-    </Popover>
+    <div className="relative">
+      <Button
+        ref={buttonRef}
+        type="button"
+        variant="outline"
+        className="flex gap-1 rounded-e-none rounded-s-lg border-r-0 px-3 focus:z-10 focus:ring-0 focus-visible:ring-0 focus:ring-offset-0"
+        disabled={disabled}
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <FlagComponent
+          country={selectedCountry}
+          countryName={selectedCountry}
+        />
+        <ChevronsUpDown
+          className={cn(
+            "-mr-2 size-4 opacity-50",
+            disabled ? "hidden" : "opacity-100"
+          )}
+        />
+      </Button>
+      {isOpen && (
+        <>
+          <div className="fixed inset-0 z-40" onClick={() => setIsOpen(false)} />
+          <div className="absolute top-full left-0 z-50 mt-1 w-[300px] rounded-md border bg-popover p-0 shadow-md">
+            <Command>
+              <CommandInput
+                value={searchValue}
+                onValueChange={setSearchValue}
+                placeholder="Search country..."
+              />
+              <CommandList className="max-h-72 overflow-y-auto">
+                <CommandEmpty>No country found.</CommandEmpty>
+                <CommandGroup>
+                  {countryList.map(({ value, label }) =>
+                    value ? (
+                      <CountrySelectOption
+                        key={value}
+                        country={value}
+                        countryName={label}
+                        selectedCountry={selectedCountry}
+                        onChange={onChange}
+                        onSelectComplete={() => setIsOpen(false)}
+                      />
+                    ) : null
+                  )}
+                </CommandGroup>
+              </CommandList>
+            </Command>
+          </div>
+        </>
+      )}
+    </div>
   );
 };
 
