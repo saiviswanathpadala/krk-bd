@@ -62,7 +62,7 @@ export const useAuthStore = create<AuthStore>()(
       },
     }),
     {
-      name: 'maruthi-auth-storage',
+      name: 'kreddy-king-auth-storage',
     }
   )
 );
