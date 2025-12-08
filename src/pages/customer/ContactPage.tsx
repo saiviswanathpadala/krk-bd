@@ -56,11 +56,11 @@ export const ContactPage: React.FC = () => {
   };
 
   const companyInfo = {
-    companyName: 'Maruthi Corporation Limited',
+    companyName: 'Kreddy King',
     tagline: 'The Best Premium Villa Houses & a better living environment',
-    description: 'Established in 1994 by Dr. K. Ram Reddy, a Macro economist serving as Chairman and managing Director, Maruthi Corporation Limited (MCL) embarked on its real estate journey with a visionary focus on the burgeoning growth of Hyderabad. Driven by his passion for real estate, meticulous planning, attention to detail, and foresight, MCL has experienced manifold growth under his leadership.',
+    description: 'Established in 1994 by Dr. K. Ram Reddy, a Macro economist serving as Chairman and managing Director, Kreddy King embarked on its real estate journey with a visionary focus on the burgeoning growth of Hyderabad. Driven by his passion for real estate, meticulous planning, attention to detail, and foresight, Kreddy King has experienced manifold growth under his leadership.',
     phone: '+91 8448448599',
-    email: 'sales@maruthicorp.com'
+    email: 'sales@kreddyking.com'
   };
 
   const containerVariants = {
