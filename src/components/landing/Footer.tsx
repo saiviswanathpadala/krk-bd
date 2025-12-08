@@ -6,18 +6,19 @@ import logoImage from '../../assets/logo.png';
 const footerLinks = {
   company: [
     { label: 'About Us', href: '#' },
-    { label: 'Careers', href: '#' },
+    { label: 'Org Team', href: '#' },
     { label: 'Contact', href: '#' },
   ],
-  properties: [
-    { label: 'Buy Property', href: '#' },
-    { label: 'Sell Property', href: '#' },
-    { label: 'Rent Property', href: '#' },
-  ],
+  // properties: [
+  //   { label: 'Buy Property', href: '#' },
+  //   { label: 'Sell Property', href: '#' },
+  //   { label: 'Rent Property', href: '#' },
+  // ],
   resources: [
-    { label: 'Blog', href: '#' },
-    { label: 'Market Insights', href: '#' },
-    { label: 'Help Center', href: '#' },
+    { label: 'AI Assistance', href: '#' },
+    { label: 'Instant Loan Assistance', href: '#' },
+    { label: 'Schedule Property Visits', href: '#' },
+    { label: 'Agents Support', href: '#' },
   ],
   legal: [
     { label: 'Privacy Policy', href: '#' },
@@ -57,14 +58,14 @@ export const Footer: React.FC = () => {
             <div style={{ display: 'flex', alignItems: 'center', gap: spacing.md, marginBottom: spacing.lg }}>
               <img
                 src={logoImage}
-                alt="Maruthi Logo"
+                alt="Kreddy King Logo"
                 style={{
                   width: 'clamp(36px, 5vw, 40px)',
                   height: 'clamp(36px, 5vw, 40px)',
                   objectFit: 'contain',
                 }}
               />
-              <span style={{ fontSize: 'clamp(16px, 2.5vw, 18px)', fontWeight: 700, letterSpacing: '-0.01em' }}>Maruthi Real Estate</span>
+              <span style={{ fontSize: 'clamp(16px, 2.5vw, 18px)', fontWeight: 700, letterSpacing: '-0.01em' }}>Kreddy King</span>
             </div>
             <p style={{ fontSize: 'clamp(13px, 1.8vw, 14px)', color: 'rgba(255, 255, 255, 0.75)', lineHeight: 1.7, marginBottom: spacing.lg }}>
               Your trusted partner in finding the perfect property across India
@@ -163,11 +164,11 @@ export const Footer: React.FC = () => {
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
               <Phone size={18} color={colors.primary.goldLight} />
-              <span style={{ fontSize: 'clamp(13px, 1.8vw, 14px)', color: 'rgba(255, 255, 255, 0.85)' }}>+91 1800-XXX-XXXX</span>
+              <span style={{ fontSize: 'clamp(13px, 1.8vw, 14px)', color: 'rgba(255, 255, 255, 0.85)' }}>+91-8448448599</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: spacing.sm }}>
               <MapPin size={18} color={colors.primary.goldLight} />
-              <span style={{ fontSize: 'clamp(13px, 1.8vw, 14px)', color: 'rgba(255, 255, 255, 0.85)' }}>Bangalore, Karnataka, India</span>
+              <span style={{ fontSize: 'clamp(13px, 1.8vw, 14px)', color: 'rgba(255, 255, 255, 0.85)' }}>Gachibowli,Hyderabad,Telangana</span>
             </div>
           </div>
         </div>
@@ -185,7 +186,7 @@ export const Footer: React.FC = () => {
           }}
         >
           <p style={{ fontSize: 'clamp(12px, 1.8vw, 14px)', color: 'rgba(255, 255, 255, 0.6)', margin: 0 }}>
-            © {new Date().getFullYear()} Maruthi Real Estate. All rights reserved.
+            © {new Date().getFullYear()} Kreddy King. All rights reserved.
           </p>
           <p style={{ fontSize: 'clamp(12px, 1.8vw, 14px)', color: 'rgba(255, 255, 255, 0.6)', margin: 0 }}>
             Made with ❤️ in India
