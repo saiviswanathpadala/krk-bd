@@ -68,6 +68,9 @@ export const userAPI = {
   getReferredCustomerById: (token: string, id: string) => api.get(`/user/referred-customers/${id}`, {
     headers: { Authorization: `Bearer ${token}` }
   }),
+  deleteAccount: (token: string) => api.delete('/user/account', {
+    headers: { Authorization: `Bearer ${token}` }
+  }),
 };
 
 // Upload API
