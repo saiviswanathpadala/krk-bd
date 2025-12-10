@@ -10,6 +10,7 @@ import { HowItWorks } from '../components/landing/HowItWorks';
 import { Testimonials } from '../components/landing/Testimonials';
 import { CTA } from '../components/landing/CTA';
 import { Footer } from '../components/landing/Footer';
+import { CookieConsent } from '../components/CookieConsent';
 import { useAuthStore } from '../store/authStore';
 import { toast } from 'sonner';
 
@@ -78,6 +79,7 @@ export const LandingPage: React.FC = () => {
       <Testimonials />
       <CTA onLoginClick={() => setShowLoginModal(true)} />
       <Footer />
+      <CookieConsent />
 
       <LoginModal
         isOpen={showLoginModal}
