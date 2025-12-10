@@ -1362,21 +1362,27 @@ export const ProfilePage: React.FC = () => {
               )}
             </div>
 
-            {/* Delete Account Button - Only for Agent and Customer */}
-            {(displayUser?.role?.toLowerCase() === 'agent' || displayUser?.role?.toLowerCase() === 'customer') && (
-              <motion.div variants={itemVariants} className="md:col-span-2 mt-6">
-                <button
-                  onClick={() => setShowDeleteModal(true)}
-                  disabled={deleteAccountMutation.isPending}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 bg-destructive text-destructive-foreground rounded-xl font-semibold text-sm sm:text-base hover:opacity-90 transition-opacity shadow-md hover:shadow-lg disabled:opacity-50"
-                >
-                  <Trash2 className="w-5 h-5" />
-                  Delete Account
-                </button>
-              </motion.div>
-            )}
+
         </div>
       )}
+
+        {/* Delete Account Button - Always visible for Agent and Customer */}
+        {(displayUser?.role?.toLowerCase() === 'agent' || displayUser?.role?.toLowerCase() === 'customer') && (
+          <motion.div variants={itemVariants} className="mt-6">
+            <button
+              onClick={() => setShowDeleteModal(true)}
+              disabled={deleteAccountMutation.isPending}
+              className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 bg-destructive text-destructive-foreground rounded-xl font-semibold text-sm sm:text-base hover:opacity-90 transition-opacity shadow-md hover:shadow-lg disabled:opacity-50"
+            >
+              {deleteAccountMutation.isPending ? (
+                <Loader2 className="w-5 h-5 animate-spin" />
+              ) : (
+                <Trash2 className="w-5 h-5" />
+              )}
+              {deleteAccountMutation.isPending ? 'Deleting Account...' : 'Delete Account'}
+            </button>
+          </motion.div>
+        )}
       </motion.div>
 
       {/* Delete Account Confirmation Modal */}
