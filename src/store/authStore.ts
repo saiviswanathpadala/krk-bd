@@ -49,6 +49,15 @@ export const useAuthStore = create<AuthStore>()(
         const { token, user } = get();
         if (token && user) {
           try {
+            // Check if token is expired (JWT tokens expire after 30 days)
+            const tokenPayload = JSON.parse(atob(token.split('.')[1]));
+            const isExpired = tokenPayload.exp * 1000 < Date.now();
+            
+            if (isExpired) {
+              set({ user: null, token: null, isAuthenticated: false, isInitialized: true });
+              return;
+            }
+            
             const { authAPI, userAPI } = await import('../utils/api');
             await authAPI.validateToken(token);
             const response = await userAPI.getProfile(token);
