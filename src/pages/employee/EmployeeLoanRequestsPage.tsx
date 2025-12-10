@@ -243,9 +243,10 @@ export const EmployeeLoanRequestsPage: React.FC = () => {
     if (!data?.pages) return [];
     const requests = data.pages.flatMap((page) => page?.data || []);
     
-    // Filter by 'my' tickets - only show tickets assigned to current user
+    // Filter by 'my' tickets - only show tickets assigned to current employee
     if (activeFilter === 'my') {
-      return requests.filter((req) => req.assigneeId !== null && req.assigneeId !== undefined);
+      const { user } = useAuthStore.getState();
+      return requests.filter((req) => req.assigneeId === user?.id);
     }
     
     return requests;
@@ -489,4 +490,3 @@ export const EmployeeLoanRequestsPage: React.FC = () => {
     </div>
   );
 };
-
