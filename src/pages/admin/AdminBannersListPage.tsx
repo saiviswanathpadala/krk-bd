@@ -185,10 +185,11 @@ export const AdminBannersListPage: React.FC = () => {
     error: errorBanners,
     refetch: refetchBanners,
   } = useQuery({
-    queryKey: ['admin-banners', 'approved'],
+    queryKey: ['admin-banners', 'approved', debouncedSearch],
     queryFn: async () => {
       const response = await adminAPI.getBanners(token!, {
         status: 'approved',
+        q: debouncedSearch || undefined,
       });
       return response.data;
     },
@@ -204,18 +205,20 @@ export const AdminBannersListPage: React.FC = () => {
     error: errorPending,
     refetch: refetchPending,
   } = useQuery({
-    queryKey: ['admin-pending-changes', 'banner', activeFilter === 'all' ? 'all-statuses' : activeFilter],
+    queryKey: ['admin-pending-changes', 'banner', activeFilter === 'all' ? 'all-statuses' : activeFilter, debouncedSearch],
     queryFn: async () => {
       if (activeFilter === 'all') {
         const pendingResponse = await adminAPI.getPendingChanges(token!, {
           type: 'banner',
           status: 'pending',
           limit: 100,
+          q: debouncedSearch || undefined,
         });
         const needsRevisionResponse = await adminAPI.getPendingChanges(token!, {
           type: 'banner',
           status: 'needs_revision',
           limit: 100,
+          q: debouncedSearch || undefined,
         });
         return {
           data: [...(pendingResponse.data.data || []), ...(needsRevisionResponse.data.data || [])],
@@ -225,6 +228,7 @@ export const AdminBannersListPage: React.FC = () => {
         type: 'banner',
         status: activeFilter,
         limit: 100,
+        q: debouncedSearch || undefined,
       });
       return response.data;
     },
@@ -454,4 +458,3 @@ export const AdminBannersListPage: React.FC = () => {
     </div>
   );
 };
-
