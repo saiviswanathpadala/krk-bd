@@ -27,7 +27,8 @@ import {
   RefreshCw,
   Briefcase,
   MessageSquare,
-  ArrowLeft
+  ArrowLeft,
+  Trash2
 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { toast } from 'sonner';
@@ -90,7 +91,7 @@ interface UserProfile {
 }
 
 export const ProfilePage: React.FC = () => {
-  const { user, token, updateUser } = useAuthStore();
+  const { user, token, updateUser, clearAuth } = useAuthStore();
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -125,6 +126,7 @@ export const ProfilePage: React.FC = () => {
   const [imageUploading, setImageUploading] = useState(false);
   const [selectedCategories, setSelectedCategories] = useState<string[]>(user?.preferredCategories || []);
   const [updateKey, setUpdateKey] = useState(0); // Force re-render key
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
   
   // Sync displayUser whenever user changes from store (but only if not editing and not just after a save)
   // This ensures we don't overwrite manual updates during save
@@ -492,6 +494,24 @@ export const ProfilePage: React.FC = () => {
     setProfileImage(displayUser?.profileImgUrl || null);
     setSelectedCategories(displayUser?.preferredCategories || []);
     setIsEditing(false);
+  };
+
+  const deleteAccountMutation = useMutation({
+    mutationFn: () => userAPI.deleteAccount(token!),
+    onSuccess: () => {
+      toast.success('Account deleted successfully');
+      updateUser({ ...user!, deleted: true });
+      clearAuth();
+      navigate('/');
+    },
+    onError: (error: any) => {
+      toast.error(error?.response?.data?.message || 'Failed to delete account');
+    },
+  });
+
+  const handleDeleteAccount = () => {
+    deleteAccountMutation.mutate();
+    setShowDeleteModal(false);
   };
 
   const formatDate = (dateString?: string) => {
@@ -1341,10 +1361,58 @@ export const ProfilePage: React.FC = () => {
                 </div>
               )}
             </div>
+
+            {/* Delete Account Button - Only for Agent and Customer */}
+            {(displayUser?.role?.toLowerCase() === 'agent' || displayUser?.role?.toLowerCase() === 'customer') && (
+              <motion.div variants={itemVariants} className="md:col-span-2 mt-6">
+                <button
+                  onClick={() => setShowDeleteModal(true)}
+                  disabled={deleteAccountMutation.isPending}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-3 sm:py-3.5 bg-destructive text-destructive-foreground rounded-xl font-semibold text-sm sm:text-base hover:opacity-90 transition-opacity shadow-md hover:shadow-lg disabled:opacity-50"
+                >
+                  <Trash2 className="w-5 h-5" />
+                  Delete Account
+                </button>
+              </motion.div>
+            )}
         </div>
       )}
       </motion.div>
+
+      {/* Delete Account Confirmation Modal */}
+      {showDeleteModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50" onClick={() => setShowDeleteModal(false)}>
+          <div className="bg-card rounded-xl shadow-xl max-w-md w-full p-6" onClick={(e) => e.stopPropagation()}>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-xl font-bold text-foreground">Delete Account</h2>
+              <button onClick={() => setShowDeleteModal(false)} className="p-1 hover:bg-muted rounded-lg transition-colors">
+                <X className="w-5 h-5 text-muted-foreground" />
+              </button>
+            </div>
+            
+            <p className="text-muted-foreground mb-6">
+              Are you sure you want to delete this account permanently? This action cannot be undone!
+            </p>
+            
+            <div className="flex gap-3 justify-end">
+              <button
+                onClick={() => setShowDeleteModal(false)}
+                disabled={deleteAccountMutation.isPending}
+                className="px-4 py-2 border border-border rounded-lg font-medium text-foreground hover:bg-muted transition-colors disabled:opacity-50"
+              >
+                Cancel
+              </button>
+              <button
+                onClick={handleDeleteAccount}
+                disabled={deleteAccountMutation.isPending}
+                className="px-4 py-2 rounded-lg font-medium text-white bg-destructive hover:bg-destructive/90 transition-colors disabled:opacity-50"
+              >
+                {deleteAccountMutation.isPending ? 'Deleting...' : 'Delete Permanently'}
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
-
