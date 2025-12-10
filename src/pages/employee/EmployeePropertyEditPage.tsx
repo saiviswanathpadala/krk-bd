@@ -238,14 +238,12 @@ export const EmployeePropertyEditPage: React.FC = () => {
 
     setSavingAsDraft(true);
     try {
-      if (isNeedsRevision && changeId) {
-        await employeeAPI.updateDraft(token!, parseInt(changeId), draftData);
+      if (isDraft && changeId) {
+        await employeeAPI.updateDraft(token!, changeId, draftData);
+      } else if (isNeedsRevision && changeId) {
+        await employeeAPI.updateDraft(token!, changeId, draftData);
       } else if (id && id !== 'new') {
-        await employeeAPI.submitPendingChange(token!, id, {
-          proposed_payload: draftData,
-          notes: 'Draft saved',
-          isDraft: true
-        });
+        await employeeAPI.createProperty(token!, draftData, true);
       } else {
         await employeeAPI.createProperty(token!, draftData, true);
       }
