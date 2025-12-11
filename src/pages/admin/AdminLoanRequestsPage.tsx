@@ -263,9 +263,13 @@ export const AdminLoanRequestsPage: React.FC = () => {
   const allRequests = React.useMemo(() => {
     const requests = data?.pages.flatMap((page) => page.data || []) || [];
     
-    // Client-side filtering for escalated to ensure accuracy
+    // Client-side filtering for escalated to ensure accuracy and exclude closed/rejected
     if (activeFilter === 'escalated') {
-      return requests.filter(req => req.isEscalated === true);
+      return requests.filter(req => {
+        const isEscalated = req.isEscalated === true;
+        const isNotClosed = !['closed', 'rejected'].includes(req.status);
+        return isEscalated && isNotClosed;
+      });
     }
     
     // Client-side filtering for overdue to exclude closed/rejected
@@ -279,6 +283,41 @@ export const AdminLoanRequestsPage: React.FC = () => {
     
     return requests;
   }, [data, activeFilter]);
+
+  // Fetch all data to calculate corrected counts
+  const { data: allData } = useInfiniteQuery({
+    queryKey: ['admin-loan-requests-all-for-counts'],
+    queryFn: async ({ pageParam }) => {
+      const response = await adminAPI.getLoanRequests(token!, {
+        cursor: pageParam,
+        limit: 100,
+      });
+      return response.data;
+    },
+    getNextPageParam: (lastPage) => lastPage.nextCursor || undefined,
+    enabled: !!token,
+    initialPageParam: undefined as string | undefined,
+    staleTime: 30000,
+  });
+
+  // Calculate corrected counts for escalated and overdue
+  const correctedCounts = React.useMemo(() => {
+    if (!allData) return { escalated: stats?.escalated, overdue: stats?.overdue };
+    
+    const allRequests = allData.pages.flatMap((page) => page.data || []);
+    
+    const escalatedCount = allRequests.filter(req => 
+      req.isEscalated === true && !['closed', 'rejected'].includes(req.status)
+    ).length;
+    
+    const overdueCount = allRequests.filter(req => {
+      const isOverdue = req.slaDueAt && new Date(req.slaDueAt) < new Date();
+      const isNotClosed = !['closed', 'rejected'].includes(req.status);
+      return isOverdue && isNotClosed;
+    }).length;
+    
+    return { escalated: escalatedCount, overdue: overdueCount };
+  }, [allData, stats]);
 
   const handleSelectRequest = useCallback((id: string) => {
     setSelectedIds((prev) => {
@@ -441,8 +480,8 @@ export const AdminLoanRequestsPage: React.FC = () => {
           {[
             { key: 'all', label: 'All', count: stats?.total },
             { key: 'unassigned', label: 'Unassigned', count: stats?.unassigned },
-            { key: 'escalated', label: 'Escalated', count: stats?.escalated },
-            { key: 'overdue', label: 'Overdue', count: stats?.overdue },
+            { key: 'escalated', label: 'Escalated', count: correctedCounts.escalated },
+            { key: 'overdue', label: 'Overdue', count: correctedCounts.overdue },
             { key: 'under_review', label: 'Under Review' },
             { key: 'contacted', label: 'Contacted' },
             { key: 'closed', label: 'Closed' },
