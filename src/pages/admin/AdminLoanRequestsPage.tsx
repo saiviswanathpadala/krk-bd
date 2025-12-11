@@ -268,6 +268,15 @@ export const AdminLoanRequestsPage: React.FC = () => {
       return requests.filter(req => req.isEscalated === true);
     }
     
+    // Client-side filtering for overdue to exclude closed/rejected
+    if (activeFilter === 'overdue') {
+      return requests.filter(req => {
+        const isOverdue = req.slaDueAt && new Date(req.slaDueAt) < new Date();
+        const isNotClosed = !['closed', 'rejected'].includes(req.status);
+        return isOverdue && isNotClosed;
+      });
+    }
+    
     return requests;
   }, [data, activeFilter]);
 
